@@ -8,23 +8,39 @@
 
 /* Begin PBXBuildFile section */
 		554AD50B20B520D500DD6C93 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD50A20B520D500DD6C93 /* main.cpp */; };
+		554AD51620B5215500DD6C93 /* file_access.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51120B5215400DD6C93 /* file_access.cpp */; };
+		554AD51720B5215500DD6C93 /* token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51420B5215400DD6C93 /* token.cpp */; };
+		554AD51920B5252C00DD6C93 /* testfile.gmp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.gmp */; };
+		554AD51C20B5265A00DD6C93 /* fake_filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */; };
+		554AD51E20B5283200DD6C93 /* testfile2.gmp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51D20B5281C00DD6C93 /* testfile2.gmp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		554AD50520B520D500DD6C93 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
+				554AD51920B5252C00DD6C93 /* testfile.gmp in CopyFiles */,
+				554AD51E20B5283200DD6C93 /* testfile2.gmp in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		554AD50720B520D500DD6C93 /* GamePlusPlus */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GamePlusPlus; sourceTree = BUILT_PRODUCTS_DIR; };
 		554AD50A20B520D500DD6C93 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		554AD51120B5215400DD6C93 /* file_access.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_access.cpp; sourceTree = "<group>"; };
+		554AD51220B5215400DD6C93 /* file_access.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = file_access.hpp; sourceTree = "<group>"; };
+		554AD51320B5215400DD6C93 /* parse_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parse_error.hpp; sourceTree = "<group>"; };
+		554AD51420B5215400DD6C93 /* token.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = token.cpp; sourceTree = "<group>"; };
+		554AD51520B5215400DD6C93 /* token.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = token.hpp; sourceTree = "<group>"; };
+		554AD51820B524D100DD6C93 /* testfile.gmp */ = {isa = PBXFileReference; lastKnownFileType = text; path = testfile.gmp; sourceTree = "<group>"; };
+		554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_filesystem.cpp; sourceTree = "<group>"; };
+		554AD51B20B5265900DD6C93 /* fake_filesystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fake_filesystem.hpp; sourceTree = "<group>"; };
+		554AD51D20B5281C00DD6C93 /* testfile2.gmp */ = {isa = PBXFileReference; lastKnownFileType = text; path = testfile2.gmp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +74,15 @@
 			isa = PBXGroup;
 			children = (
 				554AD50A20B520D500DD6C93 /* main.cpp */,
+				554AD51120B5215400DD6C93 /* file_access.cpp */,
+				554AD51220B5215400DD6C93 /* file_access.hpp */,
+				554AD51320B5215400DD6C93 /* parse_error.hpp */,
+				554AD51420B5215400DD6C93 /* token.cpp */,
+				554AD51520B5215400DD6C93 /* token.hpp */,
+				554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */,
+				554AD51B20B5265900DD6C93 /* fake_filesystem.hpp */,
+				554AD51820B524D100DD6C93 /* testfile.gmp */,
+				554AD51D20B5281C00DD6C93 /* testfile2.gmp */,
 			);
 			path = GamePlusPlus;
 			sourceTree = "<group>";
@@ -119,6 +144,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				554AD50B20B520D500DD6C93 /* main.cpp in Sources */,
+				554AD51620B5215500DD6C93 /* file_access.cpp in Sources */,
+				554AD51720B5215500DD6C93 /* token.cpp in Sources */,
+				554AD51C20B5265A00DD6C93 /* fake_filesystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

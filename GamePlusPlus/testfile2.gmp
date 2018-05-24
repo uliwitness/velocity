@@ -1,0 +1,5 @@
+
+object livingRoom : room
+{
+	string description = "You're in the living room. It is very alive.";
+};

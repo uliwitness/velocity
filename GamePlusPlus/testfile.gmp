@@ -1,0 +1,6 @@
+object chair
+{
+	void take() {
+		cout << "This chair is too large to pick up." << endl;
+	}
+};
