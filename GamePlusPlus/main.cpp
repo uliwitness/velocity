@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 #include "token.hpp"
 #include "file_access.hpp"
 #include "fake_filesystem.hpp"
@@ -17,16 +18,16 @@ using namespace std;
 using namespace fake;
 
 
-void skip_line_breaks(vector<token> &tokens, vector<token>::iterator &currToken, const string &fname)
+void skip_line_breaks(vector<token> &tokens, vector<token>::iterator &currToken, const string &fname, ostream &destfile)
 {
 	while (currToken != tokens.end() && currToken->type == lineBreak) {
-		cout << endl << "#line " << currToken->lineNumber << " \"" << fname << "\"" << endl;
+		destfile << endl << "#line " << currToken->lineNumber << " \"" << fname << "\"" << endl;
 		++currToken;
 	}
 }
 
 
-void parse_for_instance_names(vector<token> &tokens, const string &fname)
+void parse_for_instance_names(vector<token> &tokens, const string &fname, ostream &destfile)
 {
 	vector<token>::iterator currToken = tokens.begin();
 	int nestingLevel = 0;
@@ -34,7 +35,7 @@ void parse_for_instance_names(vector<token> &tokens, const string &fname)
 	while(currToken != tokens.end()) {
 		if (nestingLevel == 0 && currToken->is_identifier("object")) {
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname);
+			skip_line_breaks(tokens, currToken, fname, destfile);
 			
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -48,7 +49,7 @@ void parse_for_instance_names(vector<token> &tokens, const string &fname)
 			string objectName = currToken->text;
 			
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname);
+			skip_line_breaks(tokens, currToken, fname, destfile);
 			
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -63,7 +64,7 @@ void parse_for_instance_names(vector<token> &tokens, const string &fname)
 			string baseClassName = "object_class";
 			if (currToken->type == colonOperator) {
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname);
+				skip_line_breaks(tokens, currToken, fname, destfile);
 				
 				if (currToken == tokens.end()) {
 					parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -79,9 +80,9 @@ void parse_for_instance_names(vector<token> &tokens, const string &fname)
 				baseClassName.append("_class");
 				
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname);
+				skip_line_breaks(tokens, currToken, fname, destfile);
 			}
-			cout << "extern class " << baseClassName << " &" << objectName << ";" << endl;
+			destfile << "extern class " << baseClassName << " &" << objectName << ";" << endl;
 		} else if(currToken->type == openCurlyBracket) {
 			++nestingLevel;
 			++currToken;
@@ -89,7 +90,7 @@ void parse_for_instance_names(vector<token> &tokens, const string &fname)
 			--nestingLevel;
 			++currToken;
 		} else if(currToken->type == lineBreak) {
-			skip_line_breaks(tokens, currToken, fname);
+			skip_line_breaks(tokens, currToken, fname, destfile);
 		} else {
 			++currToken;
 		}
@@ -97,7 +98,7 @@ void parse_for_instance_names(vector<token> &tokens, const string &fname)
 }
 
 
-void parse_for_instances(vector<token> &tokens, const string &fname)
+void parse_for_instances(vector<token> &tokens, const string &fname, ostream &destfile)
 {
 	vector<token>::iterator currToken = tokens.begin();
 	int nestingLevel = 0;
@@ -110,7 +111,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname)
 		if (nestingLevel == 0 && currToken->is_identifier("object")) {
 			currObjectLineNum = currToken->lineNumber;
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname);
+			skip_line_breaks(tokens, currToken, fname, destfile);
 
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -124,7 +125,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname)
 			currObjectName = currToken->text;
 			
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname);
+			skip_line_breaks(tokens, currToken, fname, destfile);
 
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -139,7 +140,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname)
 			currBaseClassName = "object_class";
 			if (currToken->type == colonOperator) {
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname);
+				skip_line_breaks(tokens, currToken, fname, destfile);
 
 				if (currToken == tokens.end()) {
 					parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -155,15 +156,15 @@ void parse_for_instances(vector<token> &tokens, const string &fname)
 				currBaseClassName.append("_class");
 				
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname);
+				skip_line_breaks(tokens, currToken, fname, destfile);
 			}
 
-			cout << "class " << currObjectName << "_class : " << currBaseClassName;
+			destfile << "class " << currObjectName << "_class : " << currBaseClassName;
 			isInObject = true;
 		} else if(currToken->type == openCurlyBracket) {
 			++nestingLevel;
 			++currToken;
-			cout << " {";
+			destfile << " {";
 		} else if(currToken->type == closeCurlyBracket) {
 			--nestingLevel;
 			++currToken;
@@ -176,19 +177,19 @@ void parse_for_instances(vector<token> &tokens, const string &fname)
 					throw err;
 				}
 				++currToken;
-				cout << "};" << endl;
-				cout << "#line " << currObjectLineNum << "\"" << fname << "\"" << endl;
-				cout << "class " << currBaseClassName << " &" << currObjectName << " = " << currObjectName << "_class();" << endl;
+				destfile << "};" << endl;
+				destfile << "#line " << currObjectLineNum << "\"" << fname << "\"" << endl;
+				destfile << "class " << currBaseClassName << " &" << currObjectName << " = " << currObjectName << "_class();" << endl;
 			} else {
-				cout << " }";
+				destfile << " }";
 			}
 		} else if(currToken->type == lineBreak) {
-			skip_line_breaks(tokens, currToken, fname);
+			skip_line_breaks(tokens, currToken, fname, destfile);
 		} else if (currToken->type == stringLiteral) {
-			cout << " \"" << currToken->text << "\"";
+			destfile << " \"" << currToken->text << "\"";
 			++currToken;
 		} else {
-			cout << " " << currToken->text;
+			destfile << " " << currToken->text;
 			++currToken;
 		}
 	}
@@ -200,7 +201,19 @@ int main(int argc, const char * argv[])
 	try {
 		filesystem::path				containingFolderPath(filesystem::path(argv[1]).parent_path());
 		filesystem::directory_iterator	currFile(containingFolderPath);
-		
+		string							destName(argv[1]);
+		const char*						suffix = ".gmp";
+		off_t suffixPos = destName.rfind(suffix);
+		if (suffixPos != string::npos) {
+			destName.erase(suffixPos, strlen(suffix));
+		}
+		destName.append(".cpp");
+		ofstream						destfile(destName, ofstream::out | ofstream::trunc);
+		destfile << "/* This file was auto-generated using GamePlusPlus from the file \"" << argv[1] << "\"." << endl
+		<< "   Do not edit this file, all changes will be overwritten." << endl
+		<< "   Edit the original file instead. */" << endl;
+		destfile << "#include \"object_class.hpp\"" << endl;
+
 		for( ; currFile != filesystem::directory_iterator(); ++currFile )
 		{
 			filesystem::path	fpath( (*currFile).path() );
@@ -214,15 +227,15 @@ int main(int argc, const char * argv[])
 			vector<token> tokens = token::tokenize(script);
 			
 			if (fname.compare(argv[1]) == 0) {
-//				cout << "FILE: " << argv[1] << endl;
+				cout << "FILE: " << argv[1] << endl;
 				token::debug_print(tokens, cout);
 				
-				parse_for_instances(tokens, fname);
+				parse_for_instances(tokens, fname, destfile);
 			} else {
-//				cout << "PEER: " << fname.c_str() << endl;
+				cout << "PEER: " << fname.c_str() << endl;
 				token::debug_print(tokens, cout);
 				
-				parse_for_instance_names(tokens, fname);
+				parse_for_instance_names(tokens, fname, destfile);
 			}
 		}
 		
