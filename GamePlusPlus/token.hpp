@@ -44,6 +44,23 @@ using namespace std;
 						X(greaterThanOperator) \
 						X(questionMarkOperator) \
 						X(exclamationMarkOperator) \
+						X(leftShiftOperator) \
+						X(rightShiftOperator) \
+						X(incrementOperator) \
+						X(decrementOperator) \
+						X(compareOperator) \
+						X(plusAssignmentOperator) \
+						X(minusAssignmentOperator) \
+						X(multiplyAssignmentOperator) \
+						X(divideAssignmentOperator) \
+						X(moduloAssignmentOperator) \
+						X(complementAssignmentOperator) \
+						X(orAssignmentOperator) \
+						X(andAssignmentOperator) \
+						X(tildeAssignmentOperator) \
+						X(scopeResolutionOperator) \
+						X(logicalOrOperator) \
+						X(logicalAndOperator) \
 						X(stringLiteralExpression) \
 						X(lineBreak)
 
@@ -78,4 +95,5 @@ public:
 	
 private:
 	static void end_token(token &currToken, vector<token> &tokens, tokenType currWhitespaceTokenType, size_t lineNumber);
+	static tokenType two_char_operator_for_types(tokenType firstChar, tokenType secondChar);
 };

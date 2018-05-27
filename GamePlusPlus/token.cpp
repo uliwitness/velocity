@@ -34,72 +34,121 @@ void token::debug_print(const vector<token>& tokens, ostream& outStream)
 }
 
 
-void token::end_token(token &currToken, vector<token> &tokens, tokenType currWhitespaceTokenType, size_t lineNumber)
+tokenType token::two_char_operator_for_types(tokenType firstChar, tokenType secondChar) {
+	if (firstChar == lessThanOperator && secondChar == lessThanOperator) {
+		return leftShiftOperator;
+	} else if (firstChar == greaterThanOperator && secondChar == greaterThanOperator) {
+		return rightShiftOperator;
+	} else if (firstChar == plusOperator && secondChar == plusOperator) {
+		return incrementOperator;
+	} else if (firstChar == minusOperator && secondChar == minusOperator) {
+		return decrementOperator;
+	} else if (firstChar == equalsSign && secondChar == equalsSign) {
+		return compareOperator;
+	} else if (firstChar == plusOperator && secondChar == equalsSign) {
+		return plusAssignmentOperator;
+	} else if (firstChar == minusOperator && secondChar == equalsSign) {
+		return minusAssignmentOperator;
+	} else if (firstChar == multiplyOperator && secondChar == equalsSign) {
+		return multiplyAssignmentOperator;
+	} else if (firstChar == divideOperator && secondChar == equalsSign) {
+		return divideAssignmentOperator;
+	} else if (firstChar == moduloOperator && secondChar == equalsSign) {
+		return moduloAssignmentOperator;
+	} else if (firstChar == complementOperator && secondChar == equalsSign) {
+		return complementAssignmentOperator;
+	} else if (firstChar == orOperator && secondChar == equalsSign) {
+		return orAssignmentOperator;
+	} else if (firstChar == andOperator && secondChar == equalsSign) {
+		return andAssignmentOperator;
+	} else if (firstChar == tildeOperator && secondChar == equalsSign) {
+		return tildeAssignmentOperator;
+	} else if (firstChar == orOperator && secondChar == orOperator) {
+		return logicalOrOperator;
+	} else if (firstChar == andOperator && secondChar == andOperator) {
+		return logicalAndOperator;
+	} else if (firstChar == colonOperator && secondChar == colonOperator) {
+		return scopeResolutionOperator;
+	}
+	return tokenType_LAST;
+}
+
+
+void token::end_token(token &newToken, vector<token> &tokens, tokenType currWhitespaceTokenType, size_t lineNumber)
 {
-	currToken.lineNumber = lineNumber;
-	if (currToken.startOffset < currToken.endOffset) {
-		if (currToken.type == identifier) {
-			if (strcasecmp(currToken.text.c_str(), "=") == 0) {
-				currToken.type = equalsSign;
-			} else if (strcasecmp(currToken.text.c_str(), ";") == 0) {
-				currToken.type = semicolon;
-			} else if (strcasecmp(currToken.text.c_str(), "{") == 0) {
-				currToken.type = openCurlyBracket;
-			} else if (strcasecmp(currToken.text.c_str(), "}") == 0) {
-				currToken.type = closeCurlyBracket;
-			} else if (strcasecmp(currToken.text.c_str(), "(") == 0) {
-				currToken.type = openParenthesis;
-			} else if (strcasecmp(currToken.text.c_str(), ")") == 0) {
-				currToken.type = closeParenthesis;
-			} else if (strcasecmp(currToken.text.c_str(), "[") == 0) {
-				currToken.type = openSquareBracket;
-			} else if (strcasecmp(currToken.text.c_str(), "]") == 0) {
-				currToken.type = closeSquareBracket;
-			} else if (strcasecmp(currToken.text.c_str(), ",") == 0) {
-				currToken.type = commaOperator;
-			} else if (strcasecmp(currToken.text.c_str(), ":") == 0) {
-				currToken.type = colonOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "+") == 0) {
-				currToken.type = plusOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "-") == 0) {
-				currToken.type = minusOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "/") == 0) {
-				currToken.type = divideOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "*") == 0) {
-				currToken.type = multiplyOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "%") == 0) {
-				currToken.type = moduloOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "^") == 0) {
-				currToken.type = complementOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "|") == 0) {
-				currToken.type = orOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "&") == 0) {
-				currToken.type = andOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "~") == 0) {
-				currToken.type = tildeOperator;
-			} else if (strcasecmp(currToken.text.c_str(), ".") == 0) {
-				currToken.type = dotOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "<") == 0) {
-				currToken.type = lessThanOperator;
-			} else if (strcasecmp(currToken.text.c_str(), ">") == 0) {
-				currToken.type = greaterThanOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "?") == 0) {
-				currToken.type = questionMarkOperator;
-			} else if (strcasecmp(currToken.text.c_str(), "!") == 0) {
-				currToken.type = exclamationMarkOperator;
+	tokenType lastTokenType = tokens.empty() ? tokenType_LAST : tokens.back().type;
+	
+	newToken.lineNumber = lineNumber;
+	if (newToken.startOffset < newToken.endOffset) {
+		if (newToken.type == identifier) {
+			if (strcasecmp(newToken.text.c_str(), "=") == 0) {
+				newToken.type = equalsSign;
+			} else if (strcasecmp(newToken.text.c_str(), ";") == 0) {
+				newToken.type = semicolon;
+			} else if (strcasecmp(newToken.text.c_str(), "{") == 0) {
+				newToken.type = openCurlyBracket;
+			} else if (strcasecmp(newToken.text.c_str(), "}") == 0) {
+				newToken.type = closeCurlyBracket;
+			} else if (strcasecmp(newToken.text.c_str(), "(") == 0) {
+				newToken.type = openParenthesis;
+			} else if (strcasecmp(newToken.text.c_str(), ")") == 0) {
+				newToken.type = closeParenthesis;
+			} else if (strcasecmp(newToken.text.c_str(), "[") == 0) {
+				newToken.type = openSquareBracket;
+			} else if (strcasecmp(newToken.text.c_str(), "]") == 0) {
+				newToken.type = closeSquareBracket;
+			} else if (strcasecmp(newToken.text.c_str(), ",") == 0) {
+				newToken.type = commaOperator;
+			} else if (strcasecmp(newToken.text.c_str(), ":") == 0) {
+				newToken.type = colonOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "+") == 0) {
+				newToken.type = plusOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "-") == 0) {
+				newToken.type = minusOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "/") == 0) {
+				newToken.type = divideOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "*") == 0) {
+				newToken.type = multiplyOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "%") == 0) {
+				newToken.type = moduloOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "^") == 0) {
+				newToken.type = complementOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "|") == 0) {
+				newToken.type = orOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "&") == 0) {
+				newToken.type = andOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "~") == 0) {
+				newToken.type = tildeOperator;
+			} else if (strcasecmp(newToken.text.c_str(), ".") == 0) {
+				newToken.type = dotOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "<") == 0) {
+				newToken.type = lessThanOperator;
+			} else if (strcasecmp(newToken.text.c_str(), ">") == 0) {
+				newToken.type = greaterThanOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "?") == 0) {
+				newToken.type = questionMarkOperator;
+			} else if (strcasecmp(newToken.text.c_str(), "!") == 0) {
+				newToken.type = exclamationMarkOperator;
 			}
-		} else if (currToken.type == lineBreak) {
-			currToken.lineNumber = lineNumber - 1;
+		} else if (newToken.type == lineBreak) {
+			newToken.lineNumber = lineNumber - 1;
 		}
 		
-		tokens.push_back(currToken);
+		tokenType twoCharOperatorType = two_char_operator_for_types(lastTokenType, newToken.type);
+		if (twoCharOperatorType != tokenType_LAST) {
+			token &lastToken = tokens.back();
+			lastToken.type = twoCharOperatorType;
+			lastToken.text.append(newToken.text);
+		} else {
+			tokens.push_back(newToken);
+		}
 	}
 	
-	currToken.type = currWhitespaceTokenType;
-	currToken.startOffset = SIZE_T_MAX;
-	currToken.endOffset = SIZE_T_MAX;
-	currToken.isInStringLiteralExpression = (currWhitespaceTokenType == stringLiteralExpression);
-	currToken.text.erase();
+	newToken.type = currWhitespaceTokenType;
+	newToken.startOffset = SIZE_T_MAX;
+	newToken.endOffset = SIZE_T_MAX;
+	newToken.isInStringLiteralExpression = (currWhitespaceTokenType == stringLiteralExpression);
+	newToken.text.erase();
 }
 
 
