@@ -14,7 +14,7 @@
 #include "parse_error.hpp"
 
 
-#if 1
+#if 0
 #define LINE_INSTR(_file,_filename,_line) 			do {} while(0)
 #else
 #define LINE_INSTR(_file,_filename,_line) 			_file << "#line " << _line << "\"" << _filename << "\"" << endl
@@ -25,11 +25,13 @@ using namespace std;
 using namespace fake;
 
 
-void skip_line_breaks(vector<token> &tokens, vector<token>::iterator &currToken, const string &fname, ostream &destfile)
+void skip_line_breaks(vector<token> &tokens, vector<token>::iterator &currToken, const string &fname, ostream &destHeaderFile, ostream &destSourceFile)
 {
 	while (currToken != tokens.end() && currToken->type == lineBreak) {
-		destfile << endl;
-		LINE_INSTR(destfile, fname, currToken->lineNumber);
+		destHeaderFile << endl;
+		destSourceFile << endl;
+		LINE_INSTR(destHeaderFile, fname, currToken->lineNumber);
+		LINE_INSTR(destSourceFile, fname, currToken->lineNumber);
 		++currToken;
 	}
 }
@@ -90,7 +92,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &he
 		} else if (nestingLevel == 0 && currToken->is_identifier("object")) {
 			currObjectLineNum = currToken->lineNumber;
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname, headerDestFile);
+			skip_line_breaks(tokens, currToken, fname, headerDestFile, sourceDestFile);
 
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -104,7 +106,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &he
 			currObjectName = currToken->text;
 			
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname, headerDestFile);
+			skip_line_breaks(tokens, currToken, fname, headerDestFile, sourceDestFile);
 
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -119,7 +121,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &he
 			currBaseClassName = "object_class";
 			if (currToken->type == colonOperator) {
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname, headerDestFile);
+				skip_line_breaks(tokens, currToken, fname, headerDestFile, sourceDestFile);
 
 				if (currToken == tokens.end()) {
 					parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -135,7 +137,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &he
 				currBaseClassName.append("_class");
 				
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname, headerDestFile);
+				skip_line_breaks(tokens, currToken, fname, headerDestFile, sourceDestFile);
 			}
 
 			headerDestFile << "struct " << currObjectName << "_class : " << currBaseClassName << endl;
@@ -172,7 +174,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &he
 				sourceDestFile << " }";
 			}
 		} else if(currToken->type == lineBreak) {
-			skip_line_breaks(tokens, currToken, fname, headerDestFile);
+			skip_line_breaks(tokens, currToken, fname, headerDestFile, sourceDestFile);
 		} else {
 			sourceDestFile << " " << currToken->text_for_code();
 			++currToken;
@@ -227,6 +229,9 @@ int main(int argc, const char * argv[])
 		<< "   Edit the original file instead. */" << endl
 		<< "#include \"" << filesystem::path(headerDestName).filename() << "\"" << endl;
 
+		stringstream peerIncludes;
+		stringstream headerBody;
+		
 		for( ; currFile != filesystem::directory_iterator(); ++currFile )
 		{
 			filesystem::path	fpath( (*currFile).path() );
@@ -245,7 +250,7 @@ int main(int argc, const char * argv[])
 				cout << "note: FILE: " << argv[1] << endl;
 				//token::debug_print(tokens, cout);
 				
-				parse_for_instances(tokens, fname, headerDestFile, sourceDestFile);
+				parse_for_instances(tokens, fname, headerBody, sourceDestFile);
 			} else {
 				cout << "note: PEER: " << fname.c_str() << endl;
 				
@@ -253,10 +258,13 @@ int main(int argc, const char * argv[])
 				headername.erase( fname.length() -4, 4 );
 				headername.append( ".hpp" );
 				
-				headerDestFile << "#include \"" << headername << "\"" << endl;
+				peerIncludes << "#include \"" << headername << "\"" << endl;
 			}
+			
 		}
-		
+
+		headerDestFile << peerIncludes.str() << headerBody.str();
+
 		cout << "note: done." << endl;
 	} catch(const exception& err) {
 		cerr << "error: " << err.what() << endl;
