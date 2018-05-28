@@ -61,6 +61,8 @@ using namespace std;
 						X(scopeResolutionOperator) \
 						X(logicalOrOperator) \
 						X(logicalAndOperator) \
+						X(leftShiftAssignmentOperator) \
+						X(rightShiftAssignmentOperator) \
 						X(stringLiteralExpression) \
 						X(lineBreak)
 

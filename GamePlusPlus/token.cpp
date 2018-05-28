@@ -69,6 +69,10 @@ tokenType token::two_char_operator_for_types(tokenType firstChar, tokenType seco
 		return logicalAndOperator;
 	} else if (firstChar == colonOperator && secondChar == colonOperator) {
 		return scopeResolutionOperator;
+	} else if (firstChar == leftShiftOperator && secondChar == equalsSign) {
+		return leftShiftAssignmentOperator;
+	} else if (firstChar == rightShiftOperator && secondChar == equalsSign) {
+		return rightShiftAssignmentOperator;
 	}
 	return tokenType_LAST;
 }
