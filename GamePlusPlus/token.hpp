@@ -84,7 +84,10 @@ public:
 	string text;
 	bool isInStringLiteralExpression;
 	
-	inline bool is_identifier(const string inString)
+	token() {}
+	token(tokenType inType, string inText) : type(inType), text(inText) {}
+	
+	inline bool is_identifier(const string inString) const
 	{
 		if (type != identifier) { return false; }
 		return (strcasecmp(inString.c_str(), text.c_str()) == 0);
@@ -92,6 +95,17 @@ public:
 	
 	void debug_print(ostream& outStream) const;
 	
+	string text_for_code() const {
+		if (type == stringLiteral) {
+			string quoted("\"");
+			quoted.append(text);
+			quoted.append("\"");
+			return quoted;
+		} else {
+			return text;
+		}
+	}
+
 	static vector<token> tokenize(const string& fileContents);
 	static void debug_print(const vector<token>& tokens, ostream& outStream);
 	

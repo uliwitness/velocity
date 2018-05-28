@@ -14,6 +14,13 @@
 #include "parse_error.hpp"
 
 
+#if 1
+#define LINE_INSTR(_file,_filename,_line) 			do {} while(0)
+#else
+#define LINE_INSTR(_file,_filename,_line) 			_file << "#line " << _line << "\"" << _filename << "\"" << endl
+#endif
+
+
 using namespace std;
 using namespace fake;
 
@@ -21,84 +28,14 @@ using namespace fake;
 void skip_line_breaks(vector<token> &tokens, vector<token>::iterator &currToken, const string &fname, ostream &destfile)
 {
 	while (currToken != tokens.end() && currToken->type == lineBreak) {
-		destfile << endl << "#line " << currToken->lineNumber << " \"" << fname << "\"" << endl;
+		destfile << endl;
+		LINE_INSTR(destfile, fname, currToken->lineNumber);
 		++currToken;
 	}
 }
 
 
-void parse_for_instance_names(vector<token> &tokens, const string &fname, ostream &destfile)
-{
-	vector<token>::iterator currToken = tokens.begin();
-	int nestingLevel = 0;
-	
-	while(currToken != tokens.end()) {
-		if (nestingLevel == 0 && currToken->is_identifier("object")) {
-			++currToken;
-			skip_line_breaks(tokens, currToken, fname, destfile);
-			
-			if (currToken == tokens.end()) {
-				parse_error err(currToken->startOffset, currToken->endOffset, fname);
-				err.message << "Expected class name after \"object\", found end of file.";
-				throw err;
-			} else if (currToken->type != identifier) {
-				parse_error err(currToken->startOffset, currToken->endOffset, fname);
-				err.message << "Expected class name after \"object\", found \"" << currToken->text << "\".";
-				throw err;
-			}
-			string objectName = currToken->text;
-			
-			++currToken;
-			skip_line_breaks(tokens, currToken, fname, destfile);
-			
-			if (currToken == tokens.end()) {
-				parse_error err(currToken->startOffset, currToken->endOffset, fname);
-				err.message << "Expected superclass specification or start of object after object definition, found end of file.";
-				throw err;
-			} else if (currToken->type != colonOperator && currToken->type != openCurlyBracket) {
-				parse_error err(currToken->startOffset, currToken->endOffset, fname);
-				err.message << "Expected superclass specification or start of object after object definition, found \"" << currToken->text << "\".";
-				throw err;
-			}
-
-			string baseClassName = "object_class";
-			if (currToken->type == colonOperator) {
-				++currToken;
-				skip_line_breaks(tokens, currToken, fname, destfile);
-				
-				if (currToken == tokens.end()) {
-					parse_error err(currToken->startOffset, currToken->endOffset, fname);
-					err.message << "Expected superclass name after \":\", found end of file.";
-					throw err;
-				} else if (currToken->type != identifier) {
-					parse_error err(currToken->startOffset, currToken->endOffset, fname);
-					err.message << "Expected superclass name after \":\", found \"" << currToken->text << "\".";
-					throw err;
-				}
-				
-				baseClassName = currToken->text;
-				baseClassName.append("_class");
-				
-				++currToken;
-				skip_line_breaks(tokens, currToken, fname, destfile);
-			}
-			destfile << "extern class " << baseClassName << " &" << objectName << ";" << endl;
-		} else if(currToken->type == openCurlyBracket) {
-			++nestingLevel;
-			++currToken;
-		} else if(currToken->type == closeCurlyBracket) {
-			--nestingLevel;
-			++currToken;
-		} else if(currToken->type == lineBreak) {
-			skip_line_breaks(tokens, currToken, fname, destfile);
-		} else {
-			++currToken;
-		}
-	}
-}
-
-
-void parse_for_instances(vector<token> &tokens, const string &fname, ostream &destfile)
+void parse_for_instances(vector<token> &tokens, const string &fname, ostream &headerDestFile, ostream &sourceDestFile)
 {
 	vector<token>::iterator currToken = tokens.begin();
 	int nestingLevel = 0;
@@ -107,11 +44,53 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &de
 	string currBaseClassName;
 	size_t currObjectLineNum = 0;
 	
+	vector<token> sourceSignatureTokens;
+	
 	while(currToken != tokens.end()) {
-		if (nestingLevel == 0 && currToken->is_identifier("object")) {
+		if (currToken->is_identifier("func")) {
+			++currToken;
+			
+			while (currToken != tokens.end() && currToken->type != openCurlyBracket) {
+				if (currToken->type == openParenthesis) { // Found start of param list, previous token must be function name.
+					string currClassName(currObjectName);
+					currClassName.append("_class");
+					// Insert foo_class:: before it so source file has full function name:
+					sourceSignatureTokens.insert(sourceSignatureTokens.end() - 1, token(identifier, currClassName));
+					sourceSignatureTokens.insert(sourceSignatureTokens.end() - 1, token(scopeResolutionOperator, "::"));
+				}
+				sourceSignatureTokens.push_back(*currToken);
+				headerDestFile << " " << currToken->text_for_code();
+				++currToken;
+			}
+			
+			for (const token& t : sourceSignatureTokens) {
+				sourceDestFile << " " << t.text_for_code();
+			}
+			
+			if (currToken != tokens.end() && currToken->type == openCurlyBracket) {
+				sourceDestFile << endl << "{" << endl;
+				headerDestFile << ";" << endl;
+				
+				++nestingLevel;
+				++currToken;
+			}
+		} else if (currToken->is_identifier("prop")) {
+			++currToken;
+			
+			while (currToken != tokens.end() && currToken->type != semicolon) {
+				headerDestFile << " " << currToken->text_for_code();
+				++currToken;
+			}
+			
+			if (currToken != tokens.end() && currToken->type == semicolon) {
+				headerDestFile << ";" << endl;
+				
+				++currToken;
+			}
+		} else if (nestingLevel == 0 && currToken->is_identifier("object")) {
 			currObjectLineNum = currToken->lineNumber;
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname, destfile);
+			skip_line_breaks(tokens, currToken, fname, headerDestFile);
 
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -125,7 +104,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &de
 			currObjectName = currToken->text;
 			
 			++currToken;
-			skip_line_breaks(tokens, currToken, fname, destfile);
+			skip_line_breaks(tokens, currToken, fname, headerDestFile);
 
 			if (currToken == tokens.end()) {
 				parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -140,7 +119,7 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &de
 			currBaseClassName = "object_class";
 			if (currToken->type == colonOperator) {
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname, destfile);
+				skip_line_breaks(tokens, currToken, fname, headerDestFile);
 
 				if (currToken == tokens.end()) {
 					parse_error err(currToken->startOffset, currToken->endOffset, fname);
@@ -156,15 +135,20 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &de
 				currBaseClassName.append("_class");
 				
 				++currToken;
-				skip_line_breaks(tokens, currToken, fname, destfile);
+				skip_line_breaks(tokens, currToken, fname, headerDestFile);
 			}
 
-			destfile << "class " << currObjectName << "_class : " << currBaseClassName;
+			headerDestFile << "struct " << currObjectName << "_class : " << currBaseClassName << endl;
 			isInObject = true;
 		} else if(currToken->type == openCurlyBracket) {
 			++nestingLevel;
 			++currToken;
-			destfile << " {";
+			LINE_INSTR(headerDestFile, fname, currToken->lineNumber);
+			if (nestingLevel == (0 + 1) && isInObject) {
+				headerDestFile << " {" << endl;
+			} else {
+				sourceDestFile << " {" << endl;
+			}
 		} else if(currToken->type == closeCurlyBracket) {
 			--nestingLevel;
 			++currToken;
@@ -173,23 +157,24 @@ void parse_for_instances(vector<token> &tokens, const string &fname, ostream &de
 				isInObject = false;
 				if (currToken == tokens.end() || currToken->type != semicolon) {
 					parse_error err(currToken->startOffset, currToken->endOffset, fname);
-					err.message << "Expected semicolon name after object definition's \"}\".";
+					err.message << "Expected semicolon after object definition's \"}\".";
 					throw err;
 				}
 				++currToken;
-				destfile << "};" << endl;
-				destfile << "#line " << currObjectLineNum << "\"" << fname << "\"" << endl;
-				destfile << "class " << currBaseClassName << " &" << currObjectName << " = " << currObjectName << "_class();" << endl;
+				headerDestFile << "};" << endl;
+				LINE_INSTR(headerDestFile, fname, currObjectLineNum);
+				headerDestFile << endl << "extern " << currObjectName << "_class " << currObjectName << ";" << endl;
+				LINE_INSTR(headerDestFile, fname, currObjectLineNum);
+				sourceDestFile << endl << currObjectName << "_class " << currObjectName << ";" << endl;
+				
+				currObjectName = "";
 			} else {
-				destfile << " }";
+				sourceDestFile << " }";
 			}
 		} else if(currToken->type == lineBreak) {
-			skip_line_breaks(tokens, currToken, fname, destfile);
-		} else if (currToken->type == stringLiteral) {
-			destfile << " \"" << currToken->text << "\"";
-			++currToken;
+			skip_line_breaks(tokens, currToken, fname, headerDestFile);
 		} else {
-			destfile << " " << currToken->text;
+			sourceDestFile << " " << currToken->text_for_code();
 			++currToken;
 		}
 	}
@@ -200,19 +185,47 @@ int main(int argc, const char * argv[])
 {
 	try {
 		filesystem::path				containingFolderPath(filesystem::path(argv[1]).parent_path());
+		
+		cout << "note: Parent folder " << containingFolderPath.string() << endl;
+		
 		filesystem::directory_iterator	currFile(containingFolderPath);
-		string							destName(argv[1]);
+		filesystem::path 				inputPath(argv[1]);
+		string							sourceDestName(inputPath.filename().string());
 		const char*						suffix = ".gmp";
-		off_t suffixPos = destName.rfind(suffix);
+		off_t suffixPos = sourceDestName.rfind(suffix);
 		if (suffixPos != string::npos) {
-			destName.erase(suffixPos, strlen(suffix));
+			sourceDestName.erase(suffixPos, strlen(suffix));
 		}
-		destName.append(".cpp");
-		ofstream						destfile(destName, ofstream::out | ofstream::trunc);
-		destfile << "/* This file was auto-generated using GamePlusPlus from the file \"" << argv[1] << "\"." << endl
+		string							headerDestName(sourceDestName);
+		sourceDestName.append(".cpp");
+		headerDestName.append(".hpp");
+
+		cout << "note: Writing system classes to object_class.hpp" << endl;
+		ofstream						baseclassfile("object_class.hpp", ofstream::out | ofstream::trunc);
+		baseclassfile << "#pragma once" << endl << endl
+		<< "#include <iostream>" << endl
+		<< "#include <string>" << endl << endl
+		<< "using namespace std;" << endl << endl
+		<< "class object_class {" << endl
+		<< "};" << endl
+		<< endl
+		<< "class room_class : object_class {" << endl
+		<< "};" << endl;
+
+		cout << "note: output to " << sourceDestName << " and " << headerDestName << endl;
+
+		ofstream						headerDestFile(headerDestName, ofstream::out | ofstream::trunc);
+		ofstream						sourceDestFile(sourceDestName, ofstream::out | ofstream::trunc);
+		headerDestFile << "/* This file was auto-generated using GamePlusPlus from the file \"" << argv[1] << "\"." << endl
 		<< "   Do not edit this file, all changes will be overwritten." << endl
-		<< "   Edit the original file instead. */" << endl;
-		destfile << "#include \"object_class.hpp\"" << endl;
+		<< "   Edit the original file instead. */" << endl << endl
+		<< "#pragma once" << endl << endl
+		<< "#include \"object_class.hpp\"" << endl;
+
+		sourceDestFile << "/* This file was auto-generated using GamePlusPlus from the file \"" << argv[1] << "\"." << endl
+		<< "   Do not edit this file, all changes will be overwritten." << endl
+		<< "   Edit the original file instead. */" << endl
+		<< "#include \"" << filesystem::path(headerDestName).filename() << "\"" << endl;
 
 		for( ; currFile != filesystem::directory_iterator(); ++currFile )
 		{
@@ -220,28 +233,33 @@ int main(int argc, const char * argv[])
 			string				fname( fpath.filename().string() );
 			if( fname.length() > 0 && fname[0] == '.' )
 				continue;
-			if( fname.rfind(".gmp") != fname.length() -4 )
+			if( fname.rfind( ".gmp" ) != fname.length() -4 )
 				continue;
 			
-			string script(file_contents(fname));
-			vector<token> tokens = token::tokenize(script);
+			cout << "note: processing " << fpath.string() << endl;
 			
-			if (fname.compare(argv[1]) == 0) {
-				cout << "FILE: " << argv[1] << endl;
-				token::debug_print(tokens, cout);
+			if (filesystem::equivalent(fpath, filesystem::path(argv[1]))) {
+				string script(file_contents(fpath.string()));
+				vector<token> tokens = token::tokenize(script);
 				
-				parse_for_instances(tokens, fname, destfile);
+				cout << "note: FILE: " << argv[1] << endl;
+				//token::debug_print(tokens, cout);
+				
+				parse_for_instances(tokens, fname, headerDestFile, sourceDestFile);
 			} else {
-				cout << "PEER: " << fname.c_str() << endl;
-				token::debug_print(tokens, cout);
+				cout << "note: PEER: " << fname.c_str() << endl;
 				
-				parse_for_instance_names(tokens, fname, destfile);
+				string				headername( fname );
+				headername.erase( fname.length() -4, 4 );
+				headername.append( ".hpp" );
+				
+				headerDestFile << "#include \"" << headername << "\"" << endl;
 			}
 		}
 		
-		cout << "done." << endl;
+		cout << "note: done." << endl;
 	} catch(const exception& err) {
-		cerr << err.what() << endl;
+		cerr << "error: " << err.what() << endl;
 	}
 	
 	return 0;

@@ -13,7 +13,34 @@
 		554AD51920B5252C00DD6C93 /* testfile.gmp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.gmp */; };
 		554AD51C20B5265A00DD6C93 /* fake_filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */; };
 		554AD51E20B5283200DD6C93 /* testfile2.gmp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51D20B5281C00DD6C93 /* testfile2.gmp */; };
+		554AD61420BB6FC300DD6C93 /* testfile.gmp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.gmp */; };
+		554AD61520BB6FC600DD6C93 /* testfile2.gmp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51D20B5281C00DD6C93 /* testfile2.gmp */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		554AD61220BB6F4B00DD6C93 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.gmp";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).cpp",
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).hpp",
+			);
+			script = "cd \"$DERIVED_SOURCES_DIR\"\n\"$TARGET_BUILD_DIR\"/GamePlusPlus \"$INPUT_FILE_PATH\"";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXContainerItemProxy section */
+		554AD61620BB70AA00DD6C93 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 554AD4FF20B520D500DD6C93 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 554AD50620B520D500DD6C93;
+			remoteInfo = GamePlusPlus;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		554AD50520B520D500DD6C93 /* CopyFiles */ = {
@@ -26,6 +53,15 @@
 				554AD51E20B5283200DD6C93 /* testfile2.gmp in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
+		};
+		554AD60920BB6EF100DD6C93 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -41,10 +77,18 @@
 		554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_filesystem.cpp; sourceTree = "<group>"; };
 		554AD51B20B5265900DD6C93 /* fake_filesystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fake_filesystem.hpp; sourceTree = "<group>"; };
 		554AD51D20B5281C00DD6C93 /* testfile2.gmp */ = {isa = PBXFileReference; lastKnownFileType = text; path = testfile2.gmp; sourceTree = "<group>"; };
+		554AD60B20BB6EF100DD6C93 /* testapp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testapp; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		554AD50420B520D500DD6C93 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		554AD60820BB6EF100DD6C93 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -58,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				554AD50920B520D500DD6C93 /* GamePlusPlus */,
+				554AD60C20BB6EF100DD6C93 /* testapp */,
 				554AD50820B520D500DD6C93 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,6 +111,7 @@
 			isa = PBXGroup;
 			children = (
 				554AD50720B520D500DD6C93 /* GamePlusPlus */,
+				554AD60B20BB6EF100DD6C93 /* testapp */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -81,10 +127,17 @@
 				554AD51520B5215400DD6C93 /* token.hpp */,
 				554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */,
 				554AD51B20B5265900DD6C93 /* fake_filesystem.hpp */,
+			);
+			path = GamePlusPlus;
+			sourceTree = "<group>";
+		};
+		554AD60C20BB6EF100DD6C93 /* testapp */ = {
+			isa = PBXGroup;
+			children = (
 				554AD51820B524D100DD6C93 /* testfile.gmp */,
 				554AD51D20B5281C00DD6C93 /* testfile2.gmp */,
 			);
-			path = GamePlusPlus;
+			path = testapp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -107,6 +160,25 @@
 			productReference = 554AD50720B520D500DD6C93 /* GamePlusPlus */;
 			productType = "com.apple.product-type.tool";
 		};
+		554AD60A20BB6EF100DD6C93 /* testapp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 554AD61120BB6EF100DD6C93 /* Build configuration list for PBXNativeTarget "testapp" */;
+			buildPhases = (
+				554AD60720BB6EF100DD6C93 /* Sources */,
+				554AD60820BB6EF100DD6C93 /* Frameworks */,
+				554AD60920BB6EF100DD6C93 /* CopyFiles */,
+			);
+			buildRules = (
+				554AD61220BB6F4B00DD6C93 /* PBXBuildRule */,
+			);
+			dependencies = (
+				554AD61720BB70AA00DD6C93 /* PBXTargetDependency */,
+			);
+			name = testapp;
+			productName = testapp;
+			productReference = 554AD60B20BB6EF100DD6C93 /* testapp */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -117,6 +189,9 @@
 				ORGANIZATIONNAME = "Uli Kusterer";
 				TargetAttributes = {
 					554AD50620B520D500DD6C93 = {
+						CreatedOnToolsVersion = 9.3.1;
+					};
+					554AD60A20BB6EF100DD6C93 = {
 						CreatedOnToolsVersion = 9.3.1;
 					};
 				};
@@ -134,6 +209,7 @@
 			projectRoot = "";
 			targets = (
 				554AD50620B520D500DD6C93 /* GamePlusPlus */,
+				554AD60A20BB6EF100DD6C93 /* testapp */,
 			);
 		};
 /* End PBXProject section */
@@ -150,7 +226,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		554AD60720BB6EF100DD6C93 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				554AD61420BB6FC300DD6C93 /* testfile.gmp in Sources */,
+				554AD61520BB6FC600DD6C93 /* testfile2.gmp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		554AD61720BB70AA00DD6C93 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 554AD50620B520D500DD6C93 /* GamePlusPlus */;
+			targetProxy = 554AD61620BB70AA00DD6C93 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		554AD50C20B520D500DD6C93 /* Debug */ = {
@@ -280,6 +373,24 @@
 			};
 			name = Release;
 		};
+		554AD60F20BB6EF100DD6C93 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RCKXACKVZS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		554AD61020BB6EF100DD6C93 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RCKXACKVZS;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -297,6 +408,15 @@
 			buildConfigurations = (
 				554AD50F20B520D500DD6C93 /* Debug */,
 				554AD51020B520D500DD6C93 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		554AD61120BB6EF100DD6C93 /* Build configuration list for PBXNativeTarget "testapp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				554AD60F20BB6EF100DD6C93 /* Debug */,
+				554AD61020BB6EF100DD6C93 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
