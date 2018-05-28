@@ -50,7 +50,8 @@ namespace filesystem
 	};
 
 	bool	exists( const path& inPath );
-	
+	bool	equivalent( const path& inPath1, const path& inPath2 );
+
 	std::ostream& operator << ( std::ostream& inOutputStream, const path& inPath );
 	
 	class directory_entry

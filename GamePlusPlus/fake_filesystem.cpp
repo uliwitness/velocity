@@ -22,6 +22,30 @@ bool	fake::filesystem::exists( const path& inPath )
 }
 
 
+bool	fake::filesystem::equivalent( const path& inPath1, const path& inPath2 )
+{
+	std::string inPathString1 = inPath1.string();
+	std::string inPathString2 = inPath2.string();
+	
+	if (inPathString1.find("/") == std::string::npos) {
+		inPathString1.insert(0, "./");
+	}
+	if (inPathString2.find("/") == std::string::npos) {
+		inPathString2.insert(0, "./");
+	}
+
+	char	*	realPath1 = realpath( inPathString1.c_str(), NULL );
+	char	*	realPath2 = realpath( inPathString2.c_str(), NULL );
+	
+	bool result = strcmp( realPath1, realPath2 ) == 0;
+	
+	free(realPath1);
+	free(realPath2);
+	
+	return result;
+}
+
+
 std::ostream& fake::filesystem::operator << ( std::ostream& inOutputStream, const path& inPath )
 {
 	return inOutputStream << inPath.string();
