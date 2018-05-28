@@ -36,6 +36,8 @@ path path::filename() const
 	off_t pos = mPath.rfind("/", searchStart);
     if( pos != std::string::npos )
         return path(mPath.substr(pos +1));
+	else if( pos == std::string::npos && mPath.length() > 0 )
+		return mPath;
 	return "";
 }
 
