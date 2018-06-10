@@ -224,11 +224,31 @@ vector<token> token::tokenize(const string& fileContents)
 			currToken.type = stringLiteral;
 			currToken.startOffset = x;
 			currToken.endOffset = x +1;
+		} else if(currToken.type == stringLiteral && currCharacter == '\\') {
+			char nextCharacter = ((x + 1) < fileContents.length()) ? fileContents[x + 1] : 0;
+			if (nextCharacter == '{') { // C doesn't need to escape curly brackets because it doesn't support embedded expressions.
+				++x;
+				currToken.endOffset = x +1;
+				currToken.text.append(1, nextCharacter);
+			} else {
+				currToken.endOffset = x +1;
+				currToken.text.append(1, currCharacter);
+			}
 		} else if(currToken.type == stringLiteral && currCharacter == '{') {
 			currWhitespaceTokenType = stringLiteralExpression;
 			end_token(currToken, tokens, currWhitespaceTokenType, currLineNumber);
+			currToken.type = leftShiftOperator;
+			currToken.text = "<<";
+			currToken.startOffset = x;
+			currToken.endOffset = x + 1;
+			end_token(currToken, tokens, currWhitespaceTokenType, currLineNumber);
 		} else if(currWhitespaceTokenType == stringLiteralExpression && currCharacter == '}') {
 			currWhitespaceTokenType = whitespace;
+			end_token(currToken, tokens, currWhitespaceTokenType, currLineNumber);
+			currToken.type = leftShiftOperator;
+			currToken.text = "<<";
+			currToken.startOffset = x;
+			currToken.endOffset = x + 1;
 			end_token(currToken, tokens, currWhitespaceTokenType, currLineNumber);
 			currToken.type = stringLiteral;
 			currToken.startOffset = x + 1;

@@ -1,7 +1,7 @@
 object chair
 {
 	func void take() {
-		cout << "This chair is too large to pick up." << endl;
+		cout << "This chair is too large to pick up.{endl}";
 	}
 };
 
