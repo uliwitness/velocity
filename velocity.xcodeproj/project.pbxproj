@@ -19,14 +19,14 @@
 		554AD61220BB6F4B00DD6C93 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.gmp";
+			filePatterns = "*.vel";
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).cpp",
 				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).hpp",
 			);
-			script = "cd \"$DERIVED_SOURCES_DIR\"\n\"$TARGET_BUILD_DIR\"/GamePlusPlus \"$INPUT_FILE_PATH\"";
+			script = "cd \"$DERIVED_SOURCES_DIR\"\n\"$TARGET_BUILD_DIR\"/velocity \"$INPUT_FILE_PATH\"\n";
 		};
 /* End PBXBuildRule section */
 
