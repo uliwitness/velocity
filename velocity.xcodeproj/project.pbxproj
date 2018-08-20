@@ -10,11 +10,9 @@
 		554AD50B20B520D500DD6C93 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD50A20B520D500DD6C93 /* main.cpp */; };
 		554AD51620B5215500DD6C93 /* file_access.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51120B5215400DD6C93 /* file_access.cpp */; };
 		554AD51720B5215500DD6C93 /* token.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51420B5215400DD6C93 /* token.cpp */; };
-		554AD51920B5252C00DD6C93 /* testfile.gmp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.gmp */; };
+		554AD51920B5252C00DD6C93 /* testfile.vel in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.vel */; };
 		554AD51C20B5265A00DD6C93 /* fake_filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */; };
-		554AD51E20B5283200DD6C93 /* testfile2.gmp in CopyFiles */ = {isa = PBXBuildFile; fileRef = 554AD51D20B5281C00DD6C93 /* testfile2.gmp */; };
-		554AD61420BB6FC300DD6C93 /* testfile.gmp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.gmp */; };
-		554AD61520BB6FC600DD6C93 /* testfile2.gmp in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51D20B5281C00DD6C93 /* testfile2.gmp */; };
+		554AD61420BB6FC300DD6C93 /* testfile.vel in Sources */ = {isa = PBXBuildFile; fileRef = 554AD51820B524D100DD6C93 /* testfile.vel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -49,8 +47,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				554AD51920B5252C00DD6C93 /* testfile.gmp in CopyFiles */,
-				554AD51E20B5283200DD6C93 /* testfile2.gmp in CopyFiles */,
+				554AD51920B5252C00DD6C93 /* testfile.vel in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,17 +63,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		554AD50720B520D500DD6C93 /* GamePlusPlus */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GamePlusPlus; sourceTree = BUILT_PRODUCTS_DIR; };
+		554AD50720B520D500DD6C93 /* velocity */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = velocity; sourceTree = BUILT_PRODUCTS_DIR; };
 		554AD50A20B520D500DD6C93 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		554AD51120B5215400DD6C93 /* file_access.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = file_access.cpp; sourceTree = "<group>"; };
 		554AD51220B5215400DD6C93 /* file_access.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = file_access.hpp; sourceTree = "<group>"; };
 		554AD51320B5215400DD6C93 /* parse_error.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = parse_error.hpp; sourceTree = "<group>"; };
 		554AD51420B5215400DD6C93 /* token.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = token.cpp; sourceTree = "<group>"; };
 		554AD51520B5215400DD6C93 /* token.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = token.hpp; sourceTree = "<group>"; };
-		554AD51820B524D100DD6C93 /* testfile.gmp */ = {isa = PBXFileReference; lastKnownFileType = text; path = testfile.gmp; sourceTree = "<group>"; };
+		554AD51820B524D100DD6C93 /* testfile.vel */ = {isa = PBXFileReference; lastKnownFileType = text; path = testfile.vel; sourceTree = "<group>"; };
 		554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fake_filesystem.cpp; sourceTree = "<group>"; };
 		554AD51B20B5265900DD6C93 /* fake_filesystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = fake_filesystem.hpp; sourceTree = "<group>"; };
-		554AD51D20B5281C00DD6C93 /* testfile2.gmp */ = {isa = PBXFileReference; lastKnownFileType = text; path = testfile2.gmp; sourceTree = "<group>"; };
 		554AD60B20BB6EF100DD6C93 /* testapp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testapp; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -101,7 +97,7 @@
 		554AD4FE20B520D500DD6C93 = {
 			isa = PBXGroup;
 			children = (
-				554AD50920B520D500DD6C93 /* GamePlusPlus */,
+				554AD50920B520D500DD6C93 /* velocity */,
 				554AD60C20BB6EF100DD6C93 /* testapp */,
 				554AD50820B520D500DD6C93 /* Products */,
 			);
@@ -110,13 +106,13 @@
 		554AD50820B520D500DD6C93 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				554AD50720B520D500DD6C93 /* GamePlusPlus */,
+				554AD50720B520D500DD6C93 /* velocity */,
 				554AD60B20BB6EF100DD6C93 /* testapp */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		554AD50920B520D500DD6C93 /* GamePlusPlus */ = {
+		554AD50920B520D500DD6C93 /* velocity */ = {
 			isa = PBXGroup;
 			children = (
 				554AD50A20B520D500DD6C93 /* main.cpp */,
@@ -128,14 +124,13 @@
 				554AD51A20B5265900DD6C93 /* fake_filesystem.cpp */,
 				554AD51B20B5265900DD6C93 /* fake_filesystem.hpp */,
 			);
-			path = GamePlusPlus;
+			path = velocity;
 			sourceTree = "<group>";
 		};
 		554AD60C20BB6EF100DD6C93 /* testapp */ = {
 			isa = PBXGroup;
 			children = (
-				554AD51820B524D100DD6C93 /* testfile.gmp */,
-				554AD51D20B5281C00DD6C93 /* testfile2.gmp */,
+				554AD51820B524D100DD6C93 /* testfile.vel */,
 			);
 			path = testapp;
 			sourceTree = "<group>";
@@ -143,9 +138,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		554AD50620B520D500DD6C93 /* GamePlusPlus */ = {
+		554AD50620B520D500DD6C93 /* velocity */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 554AD50E20B520D500DD6C93 /* Build configuration list for PBXNativeTarget "GamePlusPlus" */;
+			buildConfigurationList = 554AD50E20B520D500DD6C93 /* Build configuration list for PBXNativeTarget "velocity" */;
 			buildPhases = (
 				554AD50320B520D500DD6C93 /* Sources */,
 				554AD50420B520D500DD6C93 /* Frameworks */,
@@ -155,9 +150,9 @@
 			);
 			dependencies = (
 			);
-			name = GamePlusPlus;
+			name = velocity;
 			productName = GamePlusPlus;
-			productReference = 554AD50720B520D500DD6C93 /* GamePlusPlus */;
+			productReference = 554AD50720B520D500DD6C93 /* velocity */;
 			productType = "com.apple.product-type.tool";
 		};
 		554AD60A20BB6EF100DD6C93 /* testapp */ = {
@@ -196,7 +191,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 554AD50220B520D500DD6C93 /* Build configuration list for PBXProject "GamePlusPlus" */;
+			buildConfigurationList = 554AD50220B520D500DD6C93 /* Build configuration list for PBXProject "velocity" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -208,7 +203,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				554AD50620B520D500DD6C93 /* GamePlusPlus */,
+				554AD50620B520D500DD6C93 /* velocity */,
 				554AD60A20BB6EF100DD6C93 /* testapp */,
 			);
 		};
@@ -230,8 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				554AD61420BB6FC300DD6C93 /* testfile.gmp in Sources */,
-				554AD61520BB6FC600DD6C93 /* testfile2.gmp in Sources */,
+				554AD61420BB6FC300DD6C93 /* testfile.vel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +234,7 @@
 /* Begin PBXTargetDependency section */
 		554AD61720BB70AA00DD6C93 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 554AD50620B520D500DD6C93 /* GamePlusPlus */;
+			target = 554AD50620B520D500DD6C93 /* velocity */;
 			targetProxy = 554AD61620BB70AA00DD6C93 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -394,7 +388,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		554AD50220B520D500DD6C93 /* Build configuration list for PBXProject "GamePlusPlus" */ = {
+		554AD50220B520D500DD6C93 /* Build configuration list for PBXProject "velocity" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				554AD50C20B520D500DD6C93 /* Debug */,
@@ -403,7 +397,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		554AD50E20B520D500DD6C93 /* Build configuration list for PBXNativeTarget "GamePlusPlus" */ = {
+		554AD50E20B520D500DD6C93 /* Build configuration list for PBXNativeTarget "velocity" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				554AD50F20B520D500DD6C93 /* Debug */,

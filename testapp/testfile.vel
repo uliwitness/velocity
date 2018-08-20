@@ -1,0 +1,19 @@
+class object;
+
+class array<object>;
+
+class foo_array<element> : array<element>
+{
+	void	add();
+}
+
+class application : object
+{
+	void	main();
+
+	application sharedInstance();
+
+	array<window>& windows();
+
+	unsigned long long getNumber();
+}
